@@ -24,16 +24,16 @@ source "azure-arm" "wordpress-mysql-image" {
 build {
   sources = [
     "source.azure-arm.wordpress-mysql-image"
-  ]   
-  
+  ]
+
   provisioner "shell" {
     execute_command = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'"
-    inline          = [
-      "apt-get update", 
-      "apt-get upgrade -y", 
+    inline = [
+      "apt-get update",
+      "apt-get upgrade -y",
       "apt-get install ansible -y"
-      ]
-    inline_shebang  = "/bin/sh -x"
+    ]
+    inline_shebang = "/bin/sh -x"
   }
 
   provisioner "ansible-local" {
