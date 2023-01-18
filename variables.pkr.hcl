@@ -10,15 +10,15 @@ variable "client_secret" {
 
 # Azure Subscription
 variable "tenant_id" {
-  type      = string
+  type = string
 }
 variable "subscription_id" {
-  type      = string
+  type = string
 }
 
 # Azure Resource Group
 variable "resource_group" {
-  type    = string
+  type = string
 }
 variable "image_name" {
   type    = string
@@ -39,6 +39,6 @@ variable "db_user" {
   default = "wordpress"
 }
 variable "db_password" {
-  type    = string
+  type      = string
   sensitive = true
 }
