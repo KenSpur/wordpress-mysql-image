@@ -29,7 +29,7 @@ variable "location" {
   default = "westeurope"
 }
 
-# mysql server
+# Mysql Server
 variable "db_name" {
   type    = string
   default = "wordpressdb"
