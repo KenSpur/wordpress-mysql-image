@@ -1,0 +1,37 @@
+- name: 'Provision mysqldb'
+  hosts: localhost
+  become: true
+
+  tasks:
+    - name: install mysql
+      apt: name=mysql-server state=present
+
+    - name: install python mysql module
+      apt: name=python3-mysqldb state=present
+
+    - name: start mysql
+      service: name=mysql state=started
+
+    - name: update bind address
+      lineinfile:
+        path: /etc/mysql/mysql.conf.d/mysqld.cnf
+        regexp: '^bind-address'
+        line: 'bind-address = 0.0.0.0'
+    
+    - name: restart mysql
+      service: name=mysql state=restarted
+
+    - name: create database
+      mysql_db:
+        name: "{{ db_name }}"
+        state: present
+        encoding: utf8mb4
+
+    - name: create user
+      no_log: true
+      mysql_user:
+        name: "{{ db_user }}"
+        password: "{{ db_password }}"
+        priv: "*.*:ALL,GRANT"
+        state: present
+        host: "%"

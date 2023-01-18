@@ -1,6 +1,6 @@
 source "azure-arm" "wordpress-mysql-image" {
   azure_tags = {
-    environment = "test"
+    build_by = "packer"
   }
 
   client_id       = "${var.client_id}"
@@ -16,8 +16,8 @@ source "azure-arm" "wordpress-mysql-image" {
   vm_size         = "Standard_B1s"
   os_type         = "Linux"
   image_publisher = "Canonical"
-  image_offer     = "UbuntuServer"
-  image_sku       = "18_04-lts-gen2"
+  image_offer     = "0001-com-ubuntu-server-jammy"
+  image_sku       = "22_04-lts-gen2"
   image_version   = "latest"
 }
 
@@ -37,7 +37,12 @@ build {
   }
 
   provisioner "ansible-local" {
-    playbook_file = "./playbooks/provision.yml"
+    playbook_file = "./playbooks/provision-mysqldb.yml"
+    extra_arguments = [
+      "-e", "db_name=${var.db_name}",
+      "-e", "db_user=${var.db_user}",
+      "-e", "db_password=${var.db_password}"
+    ]
   }
 
   provisioner "shell" {

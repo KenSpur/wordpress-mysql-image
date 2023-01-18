@@ -1,29 +1,44 @@
 # Azure Credentials
 variable "client_id" {
-    type = string
-    sensitive = true
+  type      = string
+  sensitive = true
 }
 variable "client_secret" {
-    type = string
-    sensitive = true
+  type      = string
+  sensitive = true
 }
+
+# Azure Subscription
 variable "tenant_id" {
-    type = string
-    sensitive = true
+  type      = string
 }
 variable "subscription_id" {
-    type = string
-    sensitive = true
+  type      = string
 }
 
 # Azure Resource Group
 variable "resource_group" {
-    type = string
+  type    = string
 }
 variable "image_name" {
-    type = string
+  type    = string
+  default = "img-wordpress-mysql"
 }
 variable "location" {
-    type = string
-    default = "westeurope"
+  type    = string
+  default = "westeurope"
+}
+
+# mysql server
+variable "db_name" {
+  type    = string
+  default = "wordpressdb"
+}
+variable "db_user" {
+  type    = string
+  default = "wordpress"
+}
+variable "db_password" {
+  type    = string
+  sensitive = true
 }
