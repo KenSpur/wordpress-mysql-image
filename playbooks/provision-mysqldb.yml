@@ -5,27 +5,33 @@
   tasks:
     - name: install mysql
       apt: name=mysql-server state=present
+      tags: [ mysql ]
 
     - name: install python mysql module
       apt: name=python3-mysqldb state=present
+      tags: [ mysql ]
 
     - name: start mysql
       service: name=mysql state=started
+      tags: [ mysql ]
 
     - name: update bind address
       lineinfile:
         path: /etc/mysql/mysql.conf.d/mysqld.cnf
         regexp: '^bind-address'
         line: 'bind-address = 0.0.0.0'
+      tags: [ mysql ]
     
     - name: restart mysql
       service: name=mysql state=restarted
+      tags: [ mysql ]
 
     - name: create database
       mysql_db:
         name: "{{ db_name }}"
         state: present
         encoding: utf8mb4
+      tags: [ mysql ]
 
     - name: create user
       no_log: true
@@ -35,3 +41,4 @@
         priv: "*.*:ALL,GRANT"
         state: present
         host: "%"
+      tags: [ mysql ]
