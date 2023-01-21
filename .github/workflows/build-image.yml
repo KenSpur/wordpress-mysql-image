@@ -29,14 +29,14 @@ jobs:
 
     - name: Packer Build
       run: |
-        packer build `
-          -var client_id=${{ secrets.AZURE_CLIENT_ID }} `
-          -var client_secret=${{ secrets.AZURE_CLIENT_SECRET }} `
-          -var subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }} `
-          -var tenant_id=${{ secrets.AZURE_TENANT_ID }} `
-          -var resource_group=${{ inputs.resource_group }} `
-          -var image_name=${{ inputs.image_name }} `
-          -var db_name=${{ inputs.db_name }} `
-          -var db_user=${{ inputs.db_user }} `
-          -var db_password=${{ secrets.MYSQL_PASSWORD }} `
+        packer build \
+          -var client_id=${{ secrets.AZURE_CLIENT_ID }} \
+          -var client_secret=${{ secrets.AZURE_CLIENT_SECRET }} \
+          -var subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }} \
+          -var tenant_id=${{ secrets.AZURE_TENANT_ID }} \
+          -var resource_group=${{ inputs.resource_group }} \
+          -var image_name=${{ inputs.image_name }} \
+          -var db_name=${{ inputs.db_name }} \
+          -var db_user=${{ inputs.db_user }} \
+          -var db_password=${{ secrets.MYSQL_PASSWORD }} \
           .
