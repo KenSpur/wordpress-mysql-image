@@ -21,9 +21,31 @@ source "azure-arm" "ubuntu-server-22_04-lts" {
   image_version   = "latest"
 }
 
+source "proxmox-clone" "ubuntu-server-22-04-lts" {
+  proxmox_url              = "${var.proxmox_api_url}"
+  username                 = "${var.proxmox_api_token_id}"
+  token                    = "${var.proxmox_api_token_secret}"
+  insecure_skip_tls_verify = true
+
+  node     = "${var.proxmox_node}"
+  clone_vm = "ubuntu-server-22-04-lts"
+
+  vm_name              = "wordpress-mysql-db"
+  template_description = "Wordpress MySQL DB"
+
+  cores  = "1"
+  memory = "2048"
+
+  ssh_username = "${var.ssh_username}"
+
+  task_timeout = "5m"
+  ssh_timeout  = "30m"
+}
+
 build {
   sources = [
-    "source.azure-arm.ubuntu-server-22_04-lts"
+    "source.azure-arm.ubuntu-server-22_04-lts",
+    "source.proxmox-clone.ubuntu-server-22-04-lts"
   ]
 
   provisioner "shell" {
@@ -34,7 +56,6 @@ build {
       "apt-get install ansible -y"
     ]
     inline_shebang = "/bin/sh -x"
-    only = ["azure-arm"]
   }
 
   provisioner "ansible-local" {
@@ -50,6 +71,6 @@ build {
     execute_command = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'"
     inline          = ["/usr/sbin/waagent -force -deprovision+user && export HISTSIZE=0 && sync"]
     inline_shebang  = "/bin/sh -x"
-    only = ["azure-arm"]
+    only            = ["azure-arm"]
   }
 }
