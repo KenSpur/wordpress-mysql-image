@@ -37,9 +37,6 @@ source "proxmox-clone" "ubuntu-server-22-04-lts" {
   memory = "2048"
 
   ssh_username = "${var.ssh_username}"
-
-  task_timeout = "5m"
-  ssh_timeout  = "30m"
 }
 
 build {
@@ -47,6 +44,13 @@ build {
     "source.azure-arm.ubuntu-server-22_04-lts",
     "source.proxmox-clone.ubuntu-server-22-04-lts"
   ]
+
+  provisioner "shell" {
+    inline = [
+      "while ! cloud-init status | grep -q 'done'; do echo 'Waiting for cloud-init...'; sleep 5s; done"
+    ]
+    only = ["proxmox-clone.ubuntu-server-22-04-lts"]
+  }
 
   provisioner "shell" {
     execute_command = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'"
@@ -67,10 +71,31 @@ build {
     ]
   }
 
+  # cleanups
+  provisioner "shell" {
+    inline = [
+      "sudo apt-get purge ansible -y"
+    ]
+  }
+
+  provisioner "shell" {
+    inline = [
+      "sudo rm /etc/ssh/ssh_host_*",
+      "sudo truncate -s 0 /etc/machine-id",
+      "sudo apt-get autoremove --purge -y",
+      "sudo apt-get clean -y ",
+      "sudo apt-get autoclean -y",
+      "sudo cloud-init clean",
+      "sudo rm -f /etc/cloud/cloud.cfg.d/subiquity-disable-cloudinit-networking.cfg",
+      "sudo sync"
+    ]
+    only = ["proxmox-clone.ubuntu-server-22-04-lts"]
+  }
+
   provisioner "shell" {
     execute_command = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'"
     inline          = ["/usr/sbin/waagent -force -deprovision+user && export HISTSIZE=0 && sync"]
     inline_shebang  = "/bin/sh -x"
-    only            = ["azure-arm"]
+    only            = ["azure-arm.ubuntu-server-22_04-lts"]
   }
 }
