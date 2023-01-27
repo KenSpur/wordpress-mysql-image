@@ -3,12 +3,17 @@ source "azure-arm" "ubuntu-server-22_04-lts" {
     build_by = "packer"
   }
 
-  client_id       = "${var.client_id}"
-  client_secret   = "${var.client_secret}"
-  tenant_id       = "${var.tenant_id}"
-  subscription_id = "${var.subscription_id}"
+  use_azure_cli_auth = true
 
   location = "${var.location}"
+
+  shared_image_gallery_destination {
+    gallery_name        = "${var.gallery_name}"
+    resource_group      = "${var.resource_group}"
+    image_name          = "${var.image_name}"
+    image_version       = "${var.image_version}"
+    replication_regions = var.replication_regions
+  }
 
   managed_image_resource_group_name = "${var.resource_group}"
   managed_image_name                = "${var.image_name}"
@@ -58,9 +63,9 @@ build {
   provisioner "shell" {
     inline_shebang = "/bin/sh -x"
     inline = [
-      "apt-get update",
-      "apt-get upgrade -y",
-      "apt-get install ansible -y"
+      "sudo apt-get update",
+      "sudo apt-get upgrade -y",
+      "sudo apt-get install ansible -y"
     ]
   }
 
